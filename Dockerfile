@@ -1,15 +1,11 @@
-# Pull a base image
 FROM python:3
-# Set environment variables
 ENV PYTHONDONTWRITEBYTECODE 1
 ENV PYTHONUNBUFFERED 1
-# Create a working directory for the django project
 WORKDIR /code
-# Copy requirements to the container
 COPY Pipfile Pipfile.lock /code/
-# Install the requirements to the container
 RUN pip install pipenv && pipenv install --system
-# Copy the project files into the working directory
+COPY requirements.txt . 
+COPY ./requirements.txt /requirements
+RUN pip install -r requirements.txt
 COPY . /code/
-# Open a port on the container
 EXPOSE 8000
