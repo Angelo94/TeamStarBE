@@ -9,12 +9,17 @@ from django.utils.translation import ugettext_lazy as _
 
 class Team(models.Model):
     name = models.CharField("team name", max_length=100)
-    
+    target_name = models.CharField("target name", max_length=100)
+    target_max = models.IntegerField("target max", default=5)
+
     def __str__(self):
         return self.name
 
 
 class User(AbstractBaseUser, PermissionsMixin):
+    team = models.ForeignKey("Team", null=True, on_delete=models.CASCADE)
+    is_team_admin = models.BooleanField("is team admin", default=False)
+    star_counter = models.IntegerField("star counter", default=0)
     username = models.CharField(_('username'), max_length=30, unique=True, blank=False)
     email = models.EmailField(_('email address'), unique=True)
     first_name = models.CharField(_('first name'), max_length=30, blank=True)

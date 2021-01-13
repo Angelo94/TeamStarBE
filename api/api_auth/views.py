@@ -6,8 +6,10 @@ from rest_framework import generics
 from apps.team.models import User
 from api.api_auth.serializers import UserSerializer
 from rest_framework.permissions import IsAuthenticated
+from rest_framework import viewsets
 
-class UserList(generics.ListAPIView):
+
+class UserList(viewsets.ModelViewSet):
     permission_classes = (IsAuthenticated,) 
     queryset = User.objects.all()
     serializer_class = UserSerializer
