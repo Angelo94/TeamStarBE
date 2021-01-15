@@ -1,6 +1,6 @@
 from django.urls import path, include
 from rest_auth.views import LoginView
-from api.api_auth.views import UserList
+from api.api_auth.views import UserViewSet
 from django.urls import path, include
 from rest_framework.authtoken.views import obtain_auth_token
 from rest_framework.routers import DefaultRouter
@@ -14,7 +14,7 @@ class MyDefaultRouter(DefaultRouter):
 
 router = MyDefaultRouter()
 
-router.register('user', UserList)
+router.register('user', UserViewSet)
 
 urlpatterns = [
     path('', include(router.urls)),

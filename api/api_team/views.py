@@ -11,7 +11,7 @@ from rest_framework import viewsets
 
 
 # Create your views here.
-class TeamList(viewsets.ModelViewSet):
+class TeamViewSet(viewsets.ModelViewSet):
     permission_classes = (IsAuthenticated,) 
     queryset = Team.objects.all()
     serializer_class = TeamSerializer
@@ -21,9 +21,3 @@ class TeamList(viewsets.ModelViewSet):
     #    serializer = TeamSerializer(teams, many=True)
     #    return Response(serializer.data, 200)
     #def post(self, request, *args, **kwargs):
-
-
-class TeamDetail(generics.RetrieveAPIView):
-    permission_classes = (IsAuthenticated,) 
-    queryset = Team.objects.all()
-    serializer_class = TeamSerializer

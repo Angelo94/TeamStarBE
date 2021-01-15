@@ -2,7 +2,7 @@ from django.urls import path, include
 from rest_auth.views import LoginView
 from django.urls import path, include
 from rest_framework.authtoken.views import obtain_auth_token
-from api.api_team.views import TeamList, TeamDetail
+from api.api_team.views import TeamViewSet
 from rest_framework.routers import DefaultRouter
 
 class TeamView(DefaultRouter.APIRootView):
@@ -14,10 +14,9 @@ class MyDefaultRouter(DefaultRouter):
 
 router = MyDefaultRouter()
 
-router.register('team', TeamList)
+router.register('team', TeamViewSet)
 
 
 urlpatterns = [
-    path('team/<int:pk>/', TeamDetail.as_view()),
     path('', include(router.urls))
 ]
