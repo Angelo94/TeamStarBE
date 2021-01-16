@@ -1,4 +1,5 @@
 version: '3.8'
+
 services:
   web:
     build: .
@@ -14,9 +15,10 @@ services:
     volumes:
       - postgres_data:/var/lib/postgresql/data/
     environment:
-      - "POSTGRES_HOST_AUTH_METHOD=trust"
-      - "POSTGRES_DB=basedb"
-      - "POSTGRES_USER=postgres"
-      - "POSTGRES_PASSWORD=admin"
+      - POSTGRES_HOST_AUTH_METHOD=trust
+      - POSTGRES_DB=basedb
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=admin
+
 volumes:
   postgres_data:
