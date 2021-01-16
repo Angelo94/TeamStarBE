@@ -8,6 +8,8 @@ from api.api_auth.serializers import UserSerializer
 from rest_framework.permissions import IsAuthenticated
 from rest_framework import viewsets
 from rest_framework.decorators import action
+from rest_framework.views import APIView
+
 
 class CustomObtainAuthToken(ObtainAuthToken):
     def post(self, request, *args, **kwargs):
@@ -16,6 +18,19 @@ class CustomObtainAuthToken(ObtainAuthToken):
         user = serializer.validated_data['user']
         token, created = Token.objects.get_or_create(user=user)
         return Response({'id': user.id,'token': token.key})
+
+
+class UserRegistrationView(APIView):
+    def post(self, request, *args, **kwargs):
+        try:
+            if User.objects.filter(username=request.data['username'], email=request.data['email']).exists():
+                return Response('Username already exists', 400)
+            else:
+                user = User.objects.create(username=request.data['username'], password=request.data['password'], email=request.data['email'])
+                user.save()
+                return Response("User created", 200)
+        except Exception as e:
+            return Response(e.__str__())
 
 class UserViewSet(viewsets.ModelViewSet):
     permission_classes = (IsAuthenticated,) 
