@@ -9,7 +9,9 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework import viewsets
 from rest_framework.decorators import action
 from rest_framework.views import APIView
-
+from django.db.models.signals import post_save
+from django.dispatch import receiver
+from apps.team.utils import send_push_notification
 
 class CustomObtainAuthToken(ObtainAuthToken):
     def post(self, request, *args, **kwargs):
@@ -38,15 +40,17 @@ class UserViewSet(viewsets.ModelViewSet):
     serializer_class = UserSerializer
 
     @action(methods=['put'], detail=True)
-    def add_star(self, request, pk=None):
+    def add_star(self, request, pk=None, **kwargs):
         user = User.objects.get(pk=pk)
         user.star_counter += 1
         user.save()
+        send_push_notification("user_add_star", "New star assigned", user.id)
         return Response("Star added to user {}".format(user.__str__()), 200)
 
     @action(methods=['put'], detail=True)
-    def remove_star(self, request, pk=None):
+    def remove_star(self, request, pk=None, **kwargs):
         user = User.objects.get(pk=pk)
         user.star_counter -= 1
         user.save()
+        send_push_notification("user_remove_star", "Star unassigned", user.id)
         return Response("Star removed to user {}".format(user.__str__()), 200)
