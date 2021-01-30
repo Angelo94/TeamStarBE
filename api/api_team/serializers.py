@@ -3,7 +3,7 @@ from rest_framework import serializers
 from api.api_auth.serializers import UserSerializer
 
 class TeamSerializer(serializers.ModelSerializer):
-    user_set = UserSerializer(many=True)
+    user_set = UserSerializer(many=True, required=False)
 
     class Meta:
         model = Team
