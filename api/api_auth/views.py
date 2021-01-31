@@ -2,8 +2,8 @@ from django.shortcuts import render
 from rest_framework.authtoken.views import ObtainAuthToken
 from rest_framework.authtoken.models import Token
 from rest_framework.response import Response
-from rest_framework import generics
-from apps.team.models import User
+from rest_framework import generics, status
+from apps.team.models import User, UserTeamAssignment
 from api.api_auth.serializers import UserSerializer
 from rest_framework.permissions import IsAuthenticated
 from rest_framework import viewsets
@@ -41,16 +41,30 @@ class UserViewSet(viewsets.ModelViewSet):
 
     @action(methods=['put'], detail=True)
     def add_star(self, request, pk=None, **kwargs):
-        user = User.objects.get(pk=pk)
-        user.star_counter += 1
-        user.save()
-        send_push_notification("user_add_star", "New star assigned", user.id)
-        return Response("Star added to user {}".format(user.__str__()), 200)
+        team_id = request.query_params.get('team', None)
+        if team_id is not None:
+            uta = UserTeamAssignment.objects.filter(team_id=team_id, user_id=pk)
+            if len(uta) == 1:
+                uta[0].star_counter += 1
+                uta[0].save()
+                send_push_notification("user_add_star", "New star assigned", uta[0].user.id)
+                return Response("Star added to user {}".format(uta[0].user.__str__()), 200)
+            else:
+                return Response(data="Duplicated <uta>", status=status.HTTP_400_BAD_REQUEST)
+
+        return Response(data="Error on retrieve user or team", status=status.HTTP_400_BAD_REQUEST)
 
     @action(methods=['put'], detail=True)
     def remove_star(self, request, pk=None, **kwargs):
-        user = User.objects.get(pk=pk)
-        user.star_counter -= 1
-        user.save()
-        send_push_notification("user_remove_star", "Star unassigned", user.id)
-        return Response("Star removed to user {}".format(user.__str__()), 200)
+        team_id = request.query_params.get('team', None)
+        if team_id is not None:
+            uta = UserTeamAssignment.objects.filter(team_id=team_id, user_id=pk)
+            if len(uta) == 1:
+                uta[0].star_counter -= 1
+                uta[0].save()
+                send_push_notification("user_add_star", "New star assigned", uta[0].user.id)
+                return Response("Star added to user {}".format(uta[0].user.__str__()), 200)
+            else:
+                return Response(data="Duplicated <uta>", status=status.HTTP_400_BAD_REQUEST)
+
+        return Response(data="Error on retrieve user or team", status=status.HTTP_400_BAD_REQUEST)

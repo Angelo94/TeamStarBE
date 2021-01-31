@@ -15,16 +15,21 @@ class Team(models.Model):
     def __str__(self):
         return self.name
 
-
-class User(AbstractBaseUser, PermissionsMixin):
-    team = models.ForeignKey("Team", null=True, on_delete=models.CASCADE)
+class UserTeamAssignment(models.Model):
+    team = models.ForeignKey("Team", on_delete=models.CASCADE)
+    user = models.ForeignKey("User", on_delete=models.CASCADE)
     is_team_admin = models.BooleanField("is team admin", default=False)
     star_counter = models.IntegerField("star counter", default=0)
+    date_joined = models.DateTimeField(_('date joined'), auto_now_add=True)
+
+    def __str__(self):
+        return "User {} {} in {} team".format(self.user.first_name, self.user.last_name, self.team.name)
+
+class User(AbstractBaseUser, PermissionsMixin):
     username = models.CharField(_('username'), max_length=30, unique=True, blank=False)
     email = models.EmailField(_('email address'), unique=True)
     first_name = models.CharField(_('first name'), max_length=30, blank=True)
     last_name = models.CharField(_('last name'), max_length=30, blank=True)
-    date_joined = models.DateTimeField(_('date joined'), auto_now_add=True)
     is_active = models.BooleanField(_('active'), default=True)
     is_staff = models.BooleanField(_('is staff'), default=False)
 
