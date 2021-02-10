@@ -28,7 +28,7 @@ class UserRegistrationView(APIView):
             if User.objects.filter(username=request.data['username'], email=request.data['email']).exists():
                 return Response('Username already exists', 400)
             else:
-                user = User.objects.create(username=request.data['username'], password=request.data['password'], email=request.data['email'])
+                user = User.objects.create_user(username=request.data['username'], password=request.data['password'], email=request.data['email'])
                 user.save()
                 return Response("User created", 200)
         except Exception as e:
