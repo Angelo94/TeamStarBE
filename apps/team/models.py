@@ -22,6 +22,9 @@ class UserTeamAssignment(models.Model):
     star_counter = models.IntegerField("star counter", default=0)
     date_joined = models.DateTimeField(_('date joined'), auto_now_add=True)
 
+    class Meta:
+        unique_together = ('team', 'user',)
+
     def __str__(self):
         return "User {} {} in {} team".format(self.user.first_name, self.user.last_name, self.team.name)
 
