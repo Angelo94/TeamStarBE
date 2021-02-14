@@ -47,7 +47,7 @@ class UserViewSet(viewsets.ModelViewSet):
             if len(uta) == 1:
                 uta[0].star_counter += 1
                 uta[0].save()
-                send_push_notification("user_add_star", "New star assigned", uta[0].user.id)
+                send_push_notification(uta[0].team.name + " - Star assigned", "New star assigned to", UserTeamAssignment.objects.filter(team_id=team_id), uta[0].user)
                 return Response("Star added to user {}".format(uta[0].user.__str__()), 200)
             else:
                 return Response(data="Duplicated <uta>", status=status.HTTP_400_BAD_REQUEST)
@@ -62,7 +62,7 @@ class UserViewSet(viewsets.ModelViewSet):
             if len(uta) == 1:
                 uta[0].star_counter -= 1
                 uta[0].save()
-                send_push_notification("user_add_star", "New star assigned", uta[0].user.id)
+                send_push_notification(uta[0].team.name + " - Star removed", "Star removed to", UserTeamAssignment.objects.filter(team_id=team_id), uta[0].user)
                 return Response("Star added to user {}".format(uta[0].user.__str__()), 200)
             else:
                 return Response(data="Duplicated <uta>", status=status.HTTP_400_BAD_REQUEST)

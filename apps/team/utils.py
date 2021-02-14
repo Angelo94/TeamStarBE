@@ -1,7 +1,7 @@
 import requests
 import json
 
-def send_push_notification(title, content, recipient_id):
+def send_push_notification(title, content, members, reciepient):
     print(content)
     header = {
         "Content-Type": "application/json; charset=utf-8",
@@ -17,8 +17,9 @@ def send_push_notification(title, content, recipient_id):
     for req_player in req_players.json()['players']:
         print('player external user id')
         print(str(req_player['external_user_id']))
-        if str(req_player['external_user_id']) == str(recipient_id):
-            list_players_recipients.append(req_player['id'])
+        for member in members:
+            if str(req_player['external_user_id']) == str(member.user.id):
+                list_players_recipients.append(req_player['id'])
 
     print('list ids')
     print(list_profiles_id)
@@ -29,7 +30,7 @@ def send_push_notification(title, content, recipient_id):
         "app_id": "dd43cf2f-c90a-4e93-bd23-16e2b0687f61",
         "include_player_ids": list_players_recipients,
         "contents": {
-            "en": content
+            "en": "{} {} {}".format(content, reciepient.first_name, reciepient.last_name) if reciepient.first_name != '' else "{} {}".format(content, reciepient.username)
         },
         "content-available": 1,
         "headings": {
