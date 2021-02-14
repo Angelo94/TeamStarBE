@@ -23,6 +23,14 @@ class TeamViewSet(viewsets.ModelViewSet):
             return self.queryset.filter(userteamassignment__user__id=user_id)
         return self.queryset
 
+    def create(self, request, *args, **kwargs):
+        response = super().create(request, *args, **kwargs)
+        team = Team.objects.get(pk=response.data['id'])
+        user_team_ass = UserTeamAssignment.objects.create(team=team, user=request.user)
+        user_team_ass.is_team_admin = True
+        user_team_ass.save()
+        return response
+
 
     @action(methods=['put'], detail=True)
     def add_member(self, request, pk=None, **kwargs):
